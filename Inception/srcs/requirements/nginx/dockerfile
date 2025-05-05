@@ -1,0 +1,22 @@
+FROM debian:bullseye
+
+RUN apt update && apt upgrade -y \
+	&& apt install -y  nginx
+
+RUN nginx -v
+
+# Création des répertoires nécessaires
+RUN mkdir -p /run/nginx
+
+# Copier le fichier HTML
+COPY index.html /usr/share/nginx/html/
+
+# Copier le fichier de configuration NGINX
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+
+# Exposer le port 80
+EXPOSE 80
+
+# Commande pour démarrer NGINX en mode foreground
+CMD ["nginx", "-g", "daemon off;"]
+
