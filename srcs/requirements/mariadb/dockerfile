@@ -10,6 +10,8 @@ RUN chmod +x /usr/local/bin/mariadb-conf.sh
 # Exposer le port MariaDB (3306)
 EXPOSE 3306
 
+RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
+
 # Demarrer MariaDB
 ENTRYPOINT ["/usr/local/bin/mariadb-conf.sh"]
 

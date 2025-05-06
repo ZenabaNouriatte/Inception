@@ -25,7 +25,9 @@ EOF
     
     # Arrêter le serveur temporaire
     mysqladmin -u root -p${DB_ROOT_PASSWORD} shutdown
+    sleep 5
 fi
 
 # Exécuter la commande passée en argument (généralement mysqld)
-exec "$@"
+exec mysqld_safe --socket=/run/mysqld/mysqld.sock --datadir='/var/lib/mysql'
+
