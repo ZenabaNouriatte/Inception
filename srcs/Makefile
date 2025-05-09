@@ -12,6 +12,7 @@ down:
 	sudo docker compose -f docker-compose.yml --env-file .env down
 
 clean: down
+	docker compose down -v
 	sudo docker system prune -af --volumes
 
 fclean: clean

@@ -1,0 +1,27 @@
+1. Création des répertoires de volumes (/home/debian/data/...)
+
+    Ces dossiers n'existent pas par défaut sur une nouvelle VM.
+
+    Docker ne peut pas monter un volume "bindé" vers un dossier inexistant.
+
+    Si tu ne les crées pas, docker-compose échouera lors du montage avec driver_opts.
+
+✅ À refaire sur chaque machine hôte différente (chaque VM), mais une seule fois par VM.
+🔸 2. Modification du fichier /etc/hosts
+
+    Ce fichier est local à chaque machine.
+
+    Il permet d’associer un nom de domaine (zmogne.42.fr) à une IP locale (127.0.0.1).
+
+    Sans cette modification, tu ne peux pas accéder à https://zmogne.42.fr.
+
+✅ À refaire sur chaque nouvelle VM (et à modifier si tu changes le domaine).
+✅ Astuce
+
+Tu peux créer un script d’installation rapide à exécuter sur toute nouvelle VM :
+
+#!/bin/bash
+sudo mkdir -p /home/debian/data/mariadb /home/debian/data/wordpress
+if ! grep -q "zmogne.42.fr" /etc/hosts; then
+  echo "127.0.0.1 zmogne.42.fr" | sudo tee -a /etc/hosts
+fi

@@ -2,6 +2,7 @@ FROM debian:bullseye
 # Mettre à jour les paquets de base et installer les dépendances nécessaires
 RUN apt update && apt upgrade -y && \
     apt install -y \
+    mariadb-client \
     php \
     php-fpm \
     php-mysql \

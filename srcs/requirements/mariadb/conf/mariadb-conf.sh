@@ -1,33 +1,35 @@
 #!/bin/bash
+set -e
 
-# Attendez que le service MariaDB soit prêt
+echo "[MariaDB] Création du répertoire /run/mysqld"
+mkdir -p /run/mysqld
+chown -R mysql:mysql /run/mysqld
+
+# Si la base n’est pas encore initialisée
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-    # Initialiser la base de données MariaDB
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql
+	echo "[MariaDB] Initialisation de la base"
+	mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
-    # Démarrer temporairement le serveur MariaDB
-    /usr/bin/mysqld_safe --datadir=/var/lib/mysql &
-    
-    # Attendre que le serveur soit prêt
-    until mysqladmin ping &>/dev/null; do
-        echo "Waiting for MariaDB to be ready..."
-        sleep 1
-    done
-    
-    # Configurer la base de données
-    mysql -u root << EOF
-CREATE DATABASE IF NOT EXISTS ${DB_NAME};
-CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
-GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
-FLUSH PRIVILEGES;
-EOF
-    
-    # Arrêter le serveur temporaire
-    mysqladmin -u root -p${DB_ROOT_PASSWORD} shutdown
-    sleep 5
+	echo "[MariaDB] Démarrage temporaire..."
+	mysqld_safe --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock &
+	sleep 5
+
+	echo "[MariaDB] Configuration initiale"
+	mysql -u root <<-EOF
+		ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
+		FLUSH PRIVILEGES;
+		CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;
+		CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
+		GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+		FLUSH PRIVILEGES;
+	EOF
+
+	echo "[MariaDB] Arrêt du serveur temporaire"
+	mysqladmin -uroot -p${DB_ROOT_PASSWORD} shutdown
+	sleep 3
 fi
 
-# Exécuter la commande passée en argument (généralement mysqld)
-exec mysqld_safe --socket=/run/mysqld/mysqld.sock --datadir='/var/lib/mysql'
+# Lancer MariaDB en mode normal
+echo "[MariaDB] Lancement final de MariaDB"
+exec mysqld_safe --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bind-address=0.0.0.0
 

@@ -57,16 +57,16 @@ volumes:
   mariadb:
     name : mariadb
     driver : local
-      #driver_opts:
-      #type : none
-      #device : /home/debian/data/mariadb
-      #o: bind
+    driver_opts:
+      type : none
+      device : /home/zmogne/data/mariadb
+      o: bind
   wordpress:
     name : wordpress
     driver : local
-      #    driver_opts:
-      #type: none
-      #device : /home/debian/data/wordpress
-      #o: bind 
+    driver_opts:
+      type: none
+      device : /home/zmogne/data/wordpress
+      o: bind 
 
 
