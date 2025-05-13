@@ -1,5 +1,6 @@
 FROM debian:bullseye
-# Mettre à jour les paquets de base et installer les dépendances nécessaires
+
+
 RUN apt update && apt upgrade -y && \
     apt install -y \
     mariadb-client \
@@ -12,21 +13,33 @@ RUN apt update && apt upgrade -y && \
     wget \
     unzip \
     && apt clean
+
 # Créer un répertoire pour WordPress
 RUN mkdir -p /var/www/html
+
 # Télécharger et extraire WordPress
 RUN wget https://wordpress.org/latest.tar.gz -P /tmp/ \
     && tar -xzf /tmp/latest.tar.gz -C /var/www/html/ \
     && rm /tmp/latest.tar.gz \
     && mv /var/www/html/wordpress/* /var/www/html/ \
     && rmdir /var/www/html/wordpress
+
 # Configurer PHP-FPM pour écouter sur un socket réseau
 RUN mkdir -p /run/php && \
     sed -i 's/listen = \/run\/php\/php7.4-fpm.sock/listen = 9000/g' /etc/php/7.4/fpm/pool.d/www.conf
+
 # Définir les permissions pour les fichiers WordPress
 RUN chown -R www-data:www-data /var/www/html/ \
     && chmod -R 755 /var/www/html/
+
 # Exposer le port pour PHP-FPM
 EXPOSE 9000
+
 # Démarrer PHP-FPM en premier plan
+COPY conf/wordpress-conf.sh /usr/local/bin/wordpress-conf.sh
+RUN chmod +x /usr/local/bin/wordpress-conf.sh
+
+# ENTRYPOINT pour exécuter le script automatiquement
+ENTRYPOINT ["/usr/local/bin/wordpress-conf.sh"]
 CMD ["php-fpm7.4", "-F"]
+
