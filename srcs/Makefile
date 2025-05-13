@@ -18,8 +18,8 @@ clean: down
 fclean: clean
 	sudo rm -rf /home/zmogne/data/mariadb/*
 	sudo rm -rf /home/zmogne/data/wordpress/*
-	sudo docker volume rm $(NAME)_wordpress $(NAME)_mariadb || true
-	sudo docker network rm $(NAME) || true
+	sudo docker volume rm mariadb wordpress || true
+	sudo docker network rm inception || true
 
 re: fclean all
 

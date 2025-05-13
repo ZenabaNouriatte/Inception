@@ -12,6 +12,7 @@ RUN apt update && apt upgrade -y && \
     php-mbstring \
     wget \
     unzip \
+    netcat \
     && apt clean
 
 # Créer un répertoire pour WordPress

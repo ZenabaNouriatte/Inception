@@ -2,14 +2,11 @@ FROM debian:bullseye
 
 RUN apt update && apt install -y mariadb-server
 
-# Exposer le port MariaDB (3306)
-EXPOSE 3306
-
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
 
 # Demarrer MariaDB
-COPY conf/mariadb-conf.sh /usr/local/bin/mariadb-conf.sh
+COPY conf/mariadb-conf.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/mariadb-conf.sh
-ENTRYPOINT ["/usr/local/bin/mariadb-conf.sh"]
 
+ENTRYPOINT ["/usr/local/bin/mariadb-conf.sh"]
 CMD ["mysqld"]

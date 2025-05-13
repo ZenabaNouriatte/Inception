@@ -1,25 +1,31 @@
 #!/bin/bash
 set -e
 
+echo "[MariaDB] Préparation du répertoire..."
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
+chown -R mysql:mysql /var/lib/mysql
 
-if [ ! -d "/var/lib/mysql/mysql" ]; then
+# DEBUG facultatif
+env | grep DB_
+
+# Initialisation si la DB n'existe pas
+if [ ! -f "/var/lib/mysql/.init_done" ]; then
+    echo "[MariaDB] Initialisation de la base..."
     mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
-cat << EOF > /tmp/init.sql
+    echo "[MariaDB] Configuration des utilisateurs et de la base..."
+    mysqld --user=mysql --bootstrap --datadir=/var/lib/mysql <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
 CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;
-DROP USER IF EXISTS '${DB_USER}'@'%';
 CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
-
-    mysqld --user=mysql --bootstrap --datadir=/var/lib/mysql < /tmp/init.sql
-
-    rm -f /tmp/init.sql
+    touch /var/lib/mysql/.init_done
+    echo "[MariaDB] Configuration initiale OK."
 fi
 
-exec mysqld_safe --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bind-address=0.0.0.0
+echo "[MariaDB] Lancement de MariaDB..."
+exec mysqld --user=mysql --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bind-address=0.0.0.0
 
