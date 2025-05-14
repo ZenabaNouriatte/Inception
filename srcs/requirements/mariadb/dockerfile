@@ -2,9 +2,6 @@ FROM debian:bullseye
 
 RUN apt update && apt install -y mariadb-server
 
-# Exposer le port MariaDB (3306)
-EXPOSE 3306
-
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
 
 # Demarrer MariaDB
