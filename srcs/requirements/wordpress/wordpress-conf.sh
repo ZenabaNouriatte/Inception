@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # Attendre que MariaDB soit disponible
 until nc -z -v -w30 $WORDPRESS_DB_HOST 3306; do
@@ -24,13 +23,10 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
     
     # Ajouter les clés d'authentification uniques
     for key in AUTH_KEY SECURE_AUTH_KEY LOGGED_IN_KEY NONCE_KEY AUTH_SALT SECURE_AUTH_SALT LOGGED_IN_SALT NONCE_SALT; do
-    raw=$(openssl rand -base64 48)
-    escaped=$(printf '%s\n' "$raw" | sed 's/[&/\]/\\&/g')
-    sed -i "s/define( '${key}', '.*' );/define( '${key}', '${escaped}' );/g" /var/www/html/wp-config.php
-   
+        sed -i "s/define( '${key}', '.*' );/define( '${key}', '$(openssl rand -base64 48)' );/g" /var/www/html/wp-config.php
     done
-
-    echo "[WordPress] Configuration terminée."
+    
+    echo "WordPress configuré !"
 fi
 
 # Lancer PHP-FPM
