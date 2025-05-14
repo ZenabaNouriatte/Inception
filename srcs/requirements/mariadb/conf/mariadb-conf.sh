@@ -1,24 +1,37 @@
 #!/bin/bash
 set -e
 
+echo "[MariaDB] Préparation du répertoire..."
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
+chown -R mysql:mysql /var/lib/mysql
 
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
+# DEBUG facultatif : afficher les variables d'env
+env | grep DB_
 
-    TEMP_SQL=$(mktemp)
-    cat << EOF > "$TEMP_SQL"
+# Vérifier si déjà initialisé
+if [ ! -f "/var/lib/mysql/.init_completed" ]; then
+    echo "[MariaDB] Initialisation de la base de données..."
+
+    if [ ! -d "/var/lib/mysql/mysql" ]; then
+        mysql_install_db --user=mysql --datadir=/var/lib/mysql
+    fi
+
+    echo "[MariaDB] Configuration des utilisateurs et privilèges..."
+
+    mysqld --bootstrap --user=mysql --datadir=/var/lib/mysql <<EOF
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
 CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;
-CREATE USER'${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
+
+DROP USER IF EXISTS '${DB_USER}'@'%';
+CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-    mysqld --user=mysql --bootstrap --datadir=/var/lib/mysql < "$TEMP_SQL"
-    rm -f "$TEMP_SQL"
+    touch /var/lib/mysql/.init_completed
+    echo "[MariaDB] Initialisation terminée."
 fi
 
-exec mysqld_safe --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bind-address=0.0.0.0
-
+echo "[MariaDB] Lancement du serveur..."
+exec mysqld --user=mysql --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bind-address=0.0.0.0 --console
