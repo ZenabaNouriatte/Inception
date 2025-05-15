@@ -12,14 +12,17 @@ down:
 	sudo docker compose -f docker-compose.yml --env-file .env down
 
 clean: down
-	sudo docker compose -f docker-compose.yml --env-file .env down -v
 	sudo docker system prune -af --volumes
 
 fclean: clean
-	sudo rm -rf /home/zmogne/data/mariadb/*
-	sudo rm -rf /home/zmogne/data/wordpress/*
+	sudo rm -rf /home/zmogne/data/mariadb
+	sudo rm -rf /home/zmogne/data/wordpress
+	sudo mkdir -p /home/zmogne/data/mariadb
+	sudo mkdir -p /home/zmogne/data/wordpress
+	sudo chmod 777 /home/zmogne/data/mariadb
+	sudo chmod 777 /home/zmogne/data/wordpress
 	sudo docker volume rm mariadb wordpress || true
 	sudo docker network rm inception || true
 
-re: fclean all
+re: down build up
 
