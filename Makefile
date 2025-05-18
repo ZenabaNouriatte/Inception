@@ -21,8 +21,7 @@ clean: down
 fclean: clean
 	sudo rm -rf /home/zmogne/data/mariadb
 	sudo rm -rf /home/zmogne/data/wordpress
-	sudo docker volume rm mariadb wordpress || true
-	sudo docker network rm inception || true
+	- sudo docker volume rm mariadb wordpress
 
 re: down build up
 
