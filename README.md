@@ -1,100 +1,92 @@
-# 🏗️ Inception – Projet 42
-
+# Inception – Projet 42
 > Projet école 42.  
 > Objectif : Déployer une infrastructure web sécurisée en utilisant Docker et Docker Compose.
 
 ---
 
-## 🎯 Objectif pédagogique
-
+## Objectif 
 Ce projet a pour but de construire une stack de services web **conteneurisée**, tout en respectant des **bonnes pratiques de sécurité**, de modularité et de gestion système.  
 Chaque service fonctionne dans un conteneur **Docker isolé**, configuré et orchestré via **Docker Compose**.
 
 ---
 
-## 📦 Services déployés
-
-- **Nginx** – Serveur web en reverse proxy avec SSL (certificat auto-signé)  
-- **WordPress** – CMS hébergé sur une base de données distante  
-- **MariaDB** – Base de données sécurisée, configurée à l’aide de variables d’environnement  
+## 📋 Services déployés
+- **Nginx** – Serveur web en reverse proxy avec SSL (certificat auto-signé)
+- **WordPress** – CMS hébergé sur une base de données distante
+- **MariaDB** – Base de données sécurisée, configurée à l'aide de variables d'environnement
 
 Chaque service est contenu dans son propre conteneur, interconnecté via un **réseau Docker dédié**.
 
 ---
 
-## 🧱 Architecture du projet
-
+## 🏗️ Architecture du projet
+```
 inception/
 ├── srcs/
-│ ├── docker-compose.yml
-│ ├── requirements/
-│ │ ├── mariadb/
-│ │ │ └── conf/
-│ │ ├── nginx/
-│ │ │ └── conf/
-│ │ └── wordpress/
-│ │ └── tools/
-│ └── .env
+│   ├── docker-compose.yml
+│   ├── requirements/
+│   │   ├── mariadb/
+│   │   │   └── conf/
+│   │   ├── nginx/
+│   │   │   └── conf/
+│   │   └── wordpress/
+│   │       └── tools/
+│   └── .env
 ├── Makefile
 └── README.md
+```
 
-yaml
-Copier
-Modifier
-
-- Configuration des services via fichiers Dockerfile et scripts Bash  
-- Utilisation d’un `.env` pour la gestion des secrets et paramètres variables  
-- Certificat SSL généré avec OpenSSL  
+- Configuration des services via fichiers Dockerfile et scripts Bash
+- Utilisation d'un `.env` pour la gestion des secrets et paramètres variables
+- Certificat SSL généré avec OpenSSL
 
 ---
 
 ## 🔐 Sécurité & bonnes pratiques
-
-- Utilisation de **certificats SSL auto-signés**  
-- Création d’un **utilisateur non-root** dans les conteneurs  
-- Base de données initialisée avec un **mot de passe sécurisé**  
-- **Volumes persistants** pour les données de WordPress et MariaDB  
-- Réseau privé Docker pour isoler les services  
+- Utilisation de **certificats SSL auto-signés**
+- Création d'un **utilisateur non-root** dans les conteneurs
+- Base de données initialisée avec un **mot de passe sécurisé**
+- **Volumes persistants** pour les données de WordPress et MariaDB
+- Réseau privé Docker pour isoler les services
 
 ---
 
 ## 🚀 Lancer le projet
 
-### 1. Cloner le dépôt :
+1. Cloner le dépôt :
+   ```bash
+   git clone https://github.com/ZenabaNouriatte/Inception.git
+   cd Inception/srcs
+   ```
+   
+2. Créer et configurer un fichier `.env` :
+   ```env
+   DOMAIN_NAME=login.42.fr
+   MYSQL_ROOT_PASSWORD=your_root_pwd
+   MYSQL_USER=your_user
+   MYSQL_PASSWORD=your_user_pwd
+   MYSQL_DATABASE=wordpress
+   ```
 
-```bash
-git clone https://github.com/ZenabaNouriatte/Inception.git
-cd Inception/srcs
-2. Créer et configurer un fichier .env :
-env
-Copier
-Modifier
-DOMAIN_NAME=login.42.fr
-MYSQL_ROOT_PASSWORD=your_root_pwd
-MYSQL_USER=your_user
-MYSQL_PASSWORD=your_user_pwd
-MYSQL_DATABASE=wordpress
-3. Lancer l’infrastructure :
-bash
-Copier
-Modifier
-make
-4. Accéder au site WordPress :
-text
-Copier
-Modifier
-http://login.42.fr
-(Ou l’IP/nom de domaine configuré via /etc/hosts)
+3. Lancer l'infrastructure :
+   ```bash
+   make
+   ```
 
-🧠 Compétences développées
-🐳 Docker & Docker Compose
+4. Accéder à votre site WordPress :
+   ```
+   https://login.42.fr
+   ```
+   (ou l'IP/nom de domaine configuré sur votre machine via `/etc/hosts`)
 
-⚙️ Configuration de services Linux (Nginx, MariaDB, WordPress)
+---
 
-🔁 Automatisation de déploiement
-
-🔐 Réseaux, volumes, users, permissions Linux
-
-🔒 Gestion de certificats SSL avec OpenSSL
-
-🧱 Isolation et sécurité des services en conteneurs
+## 🧠 Compétences développées
+- Docker & Docker Compose
+- Configuration de services Linux (Nginx, MariaDB, WordPress)
+- Automatisation de déploiement
+- Réseaux, volumes, users, permissions Linux
+- Gestion de certificats SSL avec OpenSSL
+- Isolation et sécurité des services en conteneurs
+- Gestion de certificats SSL avec OpenSSL
+- Isolation et sécurité des services en conteneurs
