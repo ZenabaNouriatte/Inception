@@ -36,7 +36,7 @@ Chaque service est contenu dans son propre conteneur, interconnecté via un **r�
 │   │       └── tools/
 │   └── .env
 ├── Makefile
-└── README.md
+└── README.md```
 
 - Configuration des services via fichiers Dockerfile et scripts Bash
 - Utilisation d’un `.env` pour la gestion des secrets et paramètres variables
@@ -59,7 +59,7 @@ Chaque service est contenu dans son propre conteneur, interconnecté via un **r�
 1. Cloner le dépôt :
    ```bash
    git clone https://github.com/ZenabaNouriatte/Inception.git
-   cd Inception/srcs
+   cd Inception/srcs```
    
 2. Créer et configurer un fichier .env :
 
@@ -68,13 +68,13 @@ Chaque service est contenu dans son propre conteneur, interconnecté via un **r�
 MYSQL_ROOT_PASSWORD=your_root_pwd
 MYSQL_USER=your_user
 MYSQL_PASSWORD=your_user_pwd
-MYSQL_DATABASE=wordpress
+MYSQL_DATABASE=wordpress```
 
 3.Lancer l’infrastructure :
-```make
+```make```
 Accéder à votre site WordPress :
 
-```http://login.42.fr
+```http://login.42.fr```
 (ou l’IP/nom de domaine configuré sur votre machine via /etc/hosts)
 
 🧠 Compétences développées
