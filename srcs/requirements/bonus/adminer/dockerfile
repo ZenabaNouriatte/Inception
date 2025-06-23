@@ -1,0 +1,15 @@
+FROM debian:bullseye
+
+RUN apt -y update && apt -y install \
+    php php-cli php-mbstring php-mysql curl
+
+RUN mkdir -p /var/www/html
+
+RUN curl -L -o /var/www/html/index.php https://www.adminer.org/latest.php
+
+COPY tools/adminer.sh /adminer.sh
+RUN chmod +x /adminer.sh
+
+EXPOSE 8080
+
+CMD ["/adminer.sh"]
