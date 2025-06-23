@@ -1,4 +1,4 @@
-# 🏗️ Inception – Projet 42
+#  Inception – Projet 42
 
 > Projet réalisé dans le cadre de ma formation à l’école 42.  
 > Objectif : Déployer une infrastructure web sécurisée en utilisant Docker et Docker Compose.
@@ -12,7 +12,7 @@ Chaque service fonctionne dans un conteneur **Docker isolé**, configuré et orc
 
 ---
 
-## 📦 Services déployés
+##  Services déployés
 
 - **Nginx** – Serveur web en reverse proxy avec SSL (certificat auto-signé)
 - **WordPress** – CMS hébergé sur une base de données distante
@@ -22,9 +22,9 @@ Chaque service est contenu dans son propre conteneur, interconnecté via un **r�
 
 ---
 
-## 🧱 Architecture du projet
+##  Architecture du projet
 
-inception/
+```inception/
 ├── srcs/
 │   ├── docker-compose.yml
 │   ├── requirements/
@@ -64,17 +64,17 @@ inception/
 2. Créer et configurer un fichier .env :
 
 
-DOMAIN_NAME=login.42.fr
+```DOMAIN_NAME=login.42.fr
 MYSQL_ROOT_PASSWORD=your_root_pwd
 MYSQL_USER=your_user
 MYSQL_PASSWORD=your_user_pwd
 MYSQL_DATABASE=wordpress
 
 3.Lancer l’infrastructure :
-make
+```make
 Accéder à votre site WordPress :
 
-http://login.42.fr
+```http://login.42.fr
 (ou l’IP/nom de domaine configuré sur votre machine via /etc/hosts)
 
 🧠 Compétences développées
