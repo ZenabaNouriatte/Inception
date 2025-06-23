@@ -1,6 +1,6 @@
 #  Inception – Projet 42
 
-> Projet réalisé dans le cadre de ma formation à l’école 42.  
+> Projet école 42.  
 > Objectif : Déployer une infrastructure web sécurisée en utilisant Docker et Docker Compose.
 
 ---
