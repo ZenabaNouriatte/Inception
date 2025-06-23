@@ -19,7 +19,7 @@ Chaque service est contenu dans son propre conteneur, interconnecté via un **r�
 
 ---
 
-## 🏗️ Architecture du projet
+##  Architecture du projet
 ```
 inception/
 ├── srcs/
@@ -42,7 +42,7 @@ inception/
 
 ---
 
-## 🔐 Sécurité & bonnes pratiques
+##  Sécurité & bonnes pratiques
 - Utilisation de **certificats SSL auto-signés**
 - Création d'un **utilisateur non-root** dans les conteneurs
 - Base de données initialisée avec un **mot de passe sécurisé**
@@ -51,7 +51,7 @@ inception/
 
 ---
 
-## 🚀 Lancer le projet
+##  Lancer le projet
 
 1. Cloner le dépôt :
    ```bash
@@ -81,7 +81,7 @@ inception/
 
 ---
 
-## 🧠 Compétences développées
+##  Compétences développées
 - Docker & Docker Compose
 - Configuration de services Linux (Nginx, MariaDB, WordPress)
 - Automatisation de déploiement
