@@ -80,7 +80,40 @@ inception/
    (ou l'IP/nom de domaine configuré sur votre machine via `/etc/hosts`)
 
 ---
+##   Résultat en images
 
+- Compilation et lancement avec Docker Compose :
+  ```bash
+   Make
+   ```
+  ![Build & Compose](Screenshots/Screenshot%20from%202025-07-11%2011-08-13.png)
+
+- Conteneurs en cours d’exécution :
+  ```bash
+   sudo docker ps
+   ```
+  ![Docker PS](Screenshots/Screenshot%20from%202025-07-11%2010-58-10.png)
+  
+- Page de connexion WordPress
+  
+  ![Login WordPress](Screenshots/Screenshot%20from%202025-07-11%2010-52-58.png)
+  
+- Accès au site WordPress via HTTPS
+  
+  ![Site WordPress actif](Screenshots/Screenshot%20from%202025-07-11%2010-52-43.png)
+  
+- Tableau de bord WordPress
+  
+  ![Dashboard WordPress](Screenshots/Screenshot%20from%202025-07-11%2010-53-24.png)
+  
+- Bonus : Interface Adminer connectée à la base de données
+  
+  ![Adminer](Screenshots/Screenshot%20from%202025-07-11%2011-06-37.png)
+
+- Bonus : Site statique exposé sur un port différent
+  
+  ![Site HTML bonus](Screenshots/Screenshot%20from%202025-07-11%2011-06-00.png)
+  
 ##  Compétences développées
 - Docker & Docker Compose
 - Configuration de services Linux (Nginx, MariaDB, WordPress)
