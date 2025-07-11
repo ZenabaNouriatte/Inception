@@ -1,12 +1,20 @@
 FROM debian:bullseye
 
-RUN apt update && apt install -y mariadb-server
+# Install MariaDB
+RUN apt-get update && apt-get install -y \
+    mariadb-server \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
+# Config bind-address via un fichier .cnf
+RUN echo "[mysqld]\nbind-address=0.0.0.0" > /etc/mysql/conf.d/bind-address.cnf
 
-# Demarrer MariaDB
-COPY conf/mariadb-conf.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/mariadb-conf.sh
+# Copie script d'init
+COPY conf/mariadb-conf.sh /usr/local/bin/mariadb-conf.sh 
+RUN chmod +x /usr/local/bin/mariadb-conf.sh 
 
-ENTRYPOINT ["/usr/local/bin/mariadb-conf.sh"]
-CMD ["mysqld"]
+# expose le port aux autres containers mais pas au host
+EXPOSE 3306
+
+#Lance les cmds contenues dans mariadb-conf
+CMD ["/usr/local/bin/mariadb-conf.sh"]

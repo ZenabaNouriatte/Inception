@@ -10,6 +10,5 @@ RUN curl -L -o /var/www/html/index.php https://www.adminer.org/latest.php
 COPY tools/adminer.sh /adminer.sh
 RUN chmod +x /adminer.sh
 
-EXPOSE 8080
 
 CMD ["/adminer.sh"]

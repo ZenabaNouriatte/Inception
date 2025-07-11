@@ -1,46 +1,48 @@
 FROM debian:bullseye
 
-
-RUN apt update && apt upgrade -y && \
-    apt install -y \
-    mariadb-client \
-    php \
-    php-fpm \
-    php-mysql \
-    php-xml \
-    php-curl \
-    php-mbstring \
+# Installation des dépendances
+RUN apt-get update && apt-get install -y \
+    php7.4 \
+    php7.4-fpm \
+    php7.4-mysql \
+    php7.4-gd \
+    php7.4-mbstring \
+    php7.4-xml \
+    php7.4-zip \
+    php7.4-curl \
     wget \
     unzip \
-    netcat \
-    && apt clean
+    curl \
+    mariadb-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Créer un répertoire pour WordPress
+# Configuration de PHP-FPM
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
+
+# Création du répertoire pour les fichiers WordPress
 RUN mkdir -p /var/www/html
 
-# Télécharger et extraire WordPress
-RUN wget https://wordpress.org/latest.tar.gz -P /tmp/ \
-    && tar -xzf /tmp/latest.tar.gz -C /var/www/html/ \
-    && rm /tmp/latest.tar.gz \
-    && mv /var/www/html/wordpress/* /var/www/html/ \
-    && rmdir /var/www/html/wordpress
+# Téléchargement de WordPress
+RUN wget https://wordpress.org/latest.tar.gz -P /tmp && \
+    tar -xzf /tmp/latest.tar.gz -C /tmp && \
+    cp -a /tmp/wordpress/. /var/www/html/ && \
+    rm -rf /tmp/latest.tar.gz /tmp/wordpress
 
-# Configurer PHP-FPM pour écouter sur un socket réseau
-RUN mkdir -p /run/php && \
-    sed -i 's/listen = \/run\/php\/php7.4-fpm.sock/listen = 9000/g' /etc/php/7.4/fpm/pool.d/www.conf
+# Téléchargement de WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+    chmod +x wp-cli.phar && \
+    mv wp-cli.phar /usr/local/bin/wp
 
-# Définir les permissions pour les fichiers WordPress
-RUN chown -R www-data:www-data /var/www/html/ \
-    && chmod -R 755 /var/www/html/
+# Changement des permissions
+RUN chown -R www-data:www-data /var/www/html
 
-# Exposer le port pour PHP-FPM
-EXPOSE 9000
-
-# Démarrer PHP-FPM en premier plan
-COPY conf/wordpress-conf.sh /usr/local/bin/wordpress-conf.sh
+# Copie du script d'initialisation
+COPY tools/wordpress-conf.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/wordpress-conf.sh
 
-# ENTRYPOINT pour exécuter le script automatiquement
-ENTRYPOINT ["/usr/local/bin/wordpress-conf.sh"]
-CMD ["php-fpm7.4", "-F"]
+# Exposition du port PHP-FPM
+EXPOSE 9000
 
+# Commande de démarrage
+CMD ["/usr/local/bin/wordpress-conf.sh"]

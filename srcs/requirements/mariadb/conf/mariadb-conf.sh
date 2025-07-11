@@ -1,31 +1,24 @@
 #!/bin/bash
-set -e
 
-echo "[MariaDB] Préparation du répertoire..."
-mkdir -p /run/mysqld
-chown -R mysql:mysql /run/mysqld
-chown -R mysql:mysql /var/lib/mysql
+#Demarre service Mariadb
+service mariadb start
 
-# DEBUG facultatif
-env | grep DB_
+# Attend que Mariadb soit pret a recevoir les requetes
+until mariadb -u root -e "SELECT 1;" > /dev/null 2>&1; do
+    echo "Waiting for MariaDB to be ready..."
+    sleep 0.5
+done
+echo "MariaDB is ready."
 
-# Initialisation si la DB n'existe pas
-if [ ! -f "/var/lib/mysql/.init_done" ]; then
-    echo "[MariaDB] Initialisation de la base..."
-    mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
-
-    echo "[MariaDB] Configuration des utilisateurs et de la base..."
-    mysqld --user=mysql --bootstrap --datadir=/var/lib/mysql <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';
+#Executez dans le bash du container mariadb
+mariadb -u root <<-EOSQL
 CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;
-CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';
-GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+CREATE USER IF NOT EXISTS \`${DB_USER}\`@'%' IDENTIFIED BY '${DB_PASSWORD}';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO \`${DB_USER}\`@'%';
 FLUSH PRIVILEGES;
-EOF
-    touch /var/lib/mysql/.init_done
-    echo "[MariaDB] Configuration initiale OK."
-fi
+EOSQL
 
-echo "[MariaDB] Lancement de MariaDB..."
-exec mysqld --user=mysql --datadir=/var/lib/mysql --socket=/run/mysqld/mysqld.sock --bind-address=0.0.0.0
-
+#Coupe mariadb
+mysqladmin -u root -p$DB_ROOT_PASSWORD shutdown
+#Redemarre
+mysqld_safe --port=3306 --bind-address=0.0.0.0 --datadir='/var/lib/mysql'
