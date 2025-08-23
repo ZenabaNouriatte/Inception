@@ -1,22 +1,36 @@
 # Inception – Projet 42
-> Projet école 42.  
-> Objectif : Déployer une infrastructure web sécurisée en utilisant Docker et Docker Compose.
+> Projet école 42.
+
+> Objectif : Déployer rapidement une infrastructure web sécurisée et scalable sans utiliser d'images Docker Hub, utilisable comme base pour un intranet, un blog d’entreprise etc.
 
 ---
 
-## Objectif 
-Ce projet a pour but de construire une stack de services web **conteneurisée**, tout en respectant des **bonnes pratiques de sécurité**, de modularité et de gestion système.  
+## Objectif technique du sujet
+> Construire une stack de services web **conteneurisée**, tout en respectant des **bonnes pratiques de sécurité**, de modularité et de gestion système.  
 Chaque service fonctionne dans un conteneur **Docker isolé**, configuré et orchestré via **Docker Compose**.
 
 ---
 
-## 📋 Services déployés
+## Services déployés
 - **Nginx** – Serveur web en reverse proxy avec SSL (certificat auto-signé)
 - **WordPress** – CMS hébergé sur une base de données distante
 - **MariaDB** – Base de données sécurisée, configurée à l'aide de variables d'environnement
 
 Chaque service est contenu dans son propre conteneur, interconnecté via un **réseau Docker dédié**.
 
+## Technologies
+- Docker & Docker Compose
+- NGINX (reverse proxy + SSL)
+- MariaDB (base de données)
+- WordPress + PHP-FPM
+- Makefile automation
+
+## Résultats
++ Temps de déploiement : < 5 min :  automatisé en 1 commande
++ 100% des services isolés réseau
++ Données persistantes après redémarrage
++ SSL/TLS configuré
+  
 ---
 
 ##  Architecture du projet
@@ -113,13 +127,17 @@ inception/
 - Bonus : Site statique exposé sur un port différent
   
   ![Site HTML bonus](Screenshots/Screenshot%20from%202025-07-11%2011-06-00.png)
+
+## Test
++ Page d’accueil WordPress s’affiche 
++ Installation guidée atteignable 
++ Upload média persistant après make down && make up 
++ Redirections HTTP→HTTPS 
   
 ##  Compétences développées
 - Docker & Docker Compose
 - Configuration de services Linux (Nginx, MariaDB, WordPress)
 - Automatisation de déploiement
 - Réseaux, volumes, users, permissions Linux
-- Gestion de certificats SSL avec OpenSSL
-- Isolation et sécurité des services en conteneurs
 - Gestion de certificats SSL avec OpenSSL
 - Isolation et sécurité des services en conteneurs
